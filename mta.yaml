@@ -6,9 +6,16 @@ modules:
 - name: incident-management-srv
   type: nodejs
   path: gen/srv
+  properties:
+    NODE_ARGS: -r @sap/xotel-agent-ext-js/dist/common/tracer
+    SAP_CALM_DCI_LOG_LEVEL: debug
+    SAP_CALM_SERVICE_NAME: incidents-srv
+    SAP_CALM_SERVICE_TYPE: SAP_CP_CF
+    OTEL_RESOURCE_ATTRIBUTES: sap.tenancy.tenant_id=ebffa6e1-1e00-4fb6-9f1c-8c4b7256c243
   requires:
   - name: incident-management-db
   - name: incident-management-auth
+  - name: incident-management-destination-service
   - name: incidents-cloud-logging
   provides:
   - name: srv-api
@@ -20,6 +27,9 @@ modules:
     readiness-health-check-type: http
   build-parameters:
     builder: npm
+    ignore:
+        # - node_modules
+        # - package-lock.json
 - name: incident-management-db-deployer
   type: hdb
   path: gen/db
